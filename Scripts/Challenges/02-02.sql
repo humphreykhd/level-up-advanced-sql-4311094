@@ -1,20 +1,13 @@
---Get a list of all sales and all customers even if some of the data has been removed.
---List all customers and their sales
-
-SELECT cus.firstName, cus.lastName, cus.email, sa.salesAmount FROM Customer cus 
-JOIN sales sa 
-ON cus.customerid = sa.customerid
-
-UNION
---UNION customers that does not have sales data
-SELECT cus.firstName, cus.lastName, cus.email, sa.salesAmount FROM Customer cus 
-LEFT JOIN sales sa 
-ON cus.customerid = sa.customerid
-WHERE sa.salesId ISNULL
-
-UNION
--- Union Sales data that does not have customers
-SELECT cus.firstName, cus.lastName, cus.email, sa.salesAmount FROM sales sa 
-LEFT JOIN customer cus
-ON cus.customerid = sa.customerid
-WHERE cus.customerid ISNULL
+--Find the least and most expensice car sold by each employee this year
+SELECT emp.employeeid, firstName, lastName,
+MIN(salesAmount) AS least_expensive,
+Max(salesAmount) AS most_expensive, 
+AVG(salesAmount) AS Average_price,
+SUM(salesAmount) AS Total_Amount,
+COUNT(salesAmount) AS Number_of_cars_sold
+FROM employee emp
+INNER JOIN sales sa 
+ON emp.employeeId = sa.employeeId
+WHERE sa.soldDate >= date('now','start of year')
+GROUP BY sa.employeeid
+ORDER BY sa.employeeid DESC;
